@@ -1,0 +1,663 @@
+Old:
+
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls
+CODE_OF_CONDUCT.md  CONTRIBUTING.md  ExamGenFn  LICENSE  TakeExamFn  frontend  samconfig.toml  template.yml
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls -lrt
+total 24
+-rw-r--r--. 1 ec2-user ec2-user  309 Feb  8 15:33 CODE_OF_CONDUCT.md
+-rw-r--r--. 1 ec2-user ec2-user 5102 Feb  8 15:33 template.yml
+-rw-r--r--. 1 ec2-user ec2-user  945 Feb  8 15:33 LICENSE
+-rw-r--r--. 1 ec2-user ec2-user 3160 Feb  8 15:33 CONTRIBUTING.md
+-rw-r--r--. 1 ec2-user ec2-user  342 Feb  8 15:33 samconfig.toml
+drwxr-xr-x. 2 ec2-user ec2-user   26 Feb  8 15:55 TakeExamFn
+drwxr-xr-x. 2 ec2-user ec2-user   32 Feb  8 15:55 ExamGenFn
+drwxr-xr-x. 4 ec2-user ec2-user   67 Feb  8 15:55 frontend
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ pip3 install streamlit
+Defaulting to user installation because normal site-packages is not writeable
+Collecting streamlit
+  Downloading streamlit-1.50.0-py3-none-any.whl (10.1 MB)
+     |████████████████████████████████| 10.1 MB 7.0 MB/s            
+Collecting gitpython!=3.1.19,<4,>=3.0.7
+  Downloading gitpython-3.1.46-py3-none-any.whl (208 kB)
+     |████████████████████████████████| 208 kB 66.4 MB/s            
+Collecting pydeck<1,>=0.8.0b4
+  Downloading pydeck-0.9.1-py2.py3-none-any.whl (6.9 MB)
+     |████████████████████████████████| 6.9 MB 39.4 MB/s            
+Collecting toml<2,>=0.10.1
+  Downloading toml-0.10.2-py2.py3-none-any.whl (16 kB)
+Collecting blinker<2,>=1.5.0
+  Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Collecting altair!=5.4.0,!=5.4.1,<6,>=4.0
+  Downloading altair-5.5.0-py3-none-any.whl (731 kB)
+     |████████████████████████████████| 731 kB 90.8 MB/s            
+Collecting pyarrow>=7.0
+  Downloading pyarrow-21.0.0-cp39-cp39-manylinux_2_28_aarch64.whl (41.1 MB)
+     |████████████████████████████████| 41.1 MB 99.4 MB/s            
+Collecting click<9,>=7.0
+  Downloading click-8.1.8-py3-none-any.whl (98 kB)
+     |████████████████████████████████| 98 kB 21.0 MB/s            
+Collecting pillow<12,>=7.1.0
+  Downloading pillow-11.3.0-cp39-cp39-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (6.0 MB)
+     |████████████████████████████████| 6.0 MB 68.9 MB/s            
+Collecting typing-extensions<5,>=4.4.0
+  Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+     |████████████████████████████████| 44 kB 8.0 MB/s             
+Collecting requests<3,>=2.27
+  Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+     |████████████████████████████████| 64 kB 7.5 MB/s             
+Collecting packaging<26,>=20
+  Downloading packaging-25.0-py3-none-any.whl (66 kB)
+     |████████████████████████████████| 66 kB 11.6 MB/s            
+Collecting pandas<3,>=1.4.0
+  Downloading pandas-2.3.3-cp39-cp39-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (12.2 MB)
+     |████████████████████████████████| 12.2 MB 95.6 MB/s            
+Collecting cachetools<7,>=4.0
+  Downloading cachetools-6.2.6-py3-none-any.whl (11 kB)
+Collecting watchdog<7,>=2.1.5
+  Downloading watchdog-6.0.0-py3-none-manylinux2014_aarch64.whl (79 kB)
+     |████████████████████████████████| 79 kB 13.5 MB/s            
+Collecting numpy<3,>=1.23
+  Downloading numpy-2.0.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (13.9 MB)
+     |████████████████████████████████| 13.9 MB 93.2 MB/s            
+Collecting protobuf<7,>=3.20
+  Downloading protobuf-6.33.5-cp39-abi3-manylinux2014_aarch64.whl (324 kB)
+     |████████████████████████████████| 324 kB 71.4 MB/s            
+Collecting tornado!=6.5.0,<7,>=6.0.3
+  Downloading tornado-6.5.4-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (445 kB)
+     |████████████████████████████████| 445 kB 61.0 MB/s            
+Collecting tenacity<10,>=8.1.0
+  Downloading tenacity-9.1.2-py3-none-any.whl (28 kB)
+Requirement already satisfied: jinja2 in /usr/lib/python3.9/site-packages (from altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (2.11.3)
+Collecting narwhals>=1.14.2
+  Downloading narwhals-2.16.0-py3-none-any.whl (443 kB)
+     |████████████████████████████████| 443 kB 66.4 MB/s            
+Requirement already satisfied: jsonschema>=3.0 in /usr/lib/python3.9/site-packages (from altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (3.2.0)
+Collecting gitdb<5,>=4.0.1
+  Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+     |████████████████████████████████| 62 kB 3.7 MB/s             
+Collecting tzdata>=2022.7
+  Downloading tzdata-2025.3-py2.py3-none-any.whl (348 kB)
+     |████████████████████████████████| 348 kB 72.7 MB/s            
+Requirement already satisfied: pytz>=2020.1 in /usr/lib/python3.9/site-packages (from pandas<3,>=1.4.0->streamlit) (2022.7.1)
+Collecting python-dateutil>=2.8.2
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+     |████████████████████████████████| 229 kB 85.5 MB/s            
+Requirement already satisfied: idna<4,>=2.5 in /usr/lib/python3.9/site-packages (from requests<3,>=2.27->streamlit) (2.10)
+Collecting certifi>=2017.4.17
+  Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+     |████████████████████████████████| 152 kB 96.0 MB/s            
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.4.4-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (149 kB)
+     |████████████████████████████████| 149 kB 97.1 MB/s            
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/lib/python3.9/site-packages (from requests<3,>=2.27->streamlit) (1.25.10)
+Collecting smmap<6,>=3.0.1
+  Downloading smmap-5.0.2-py3-none-any.whl (24 kB)
+Requirement already satisfied: MarkupSafe>=0.23 in /usr/lib64/python3.9/site-packages (from jinja2->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (1.1.1)
+Requirement already satisfied: attrs>=17.4.0 in /usr/lib/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (20.3.0)
+Requirement already satisfied: pyrsistent>=0.14.0 in /usr/lib64/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (0.17.3)
+Requirement already satisfied: setuptools in /usr/lib/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (59.6.0)
+Requirement already satisfied: six>=1.11.0 in /usr/lib/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (1.15.0)
+Installing collected packages: smmap, tzdata, typing-extensions, python-dateutil, packaging, numpy, narwhals, gitdb, charset-normalizer, certifi, watchdog, tornado, toml, tenacity, requests, pydeck, pyarrow, protobuf, pillow, pandas, gitpython, click, cachetools, blinker, altair, streamlit
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+awscli 2.32.22 requires python-dateutil<=2.9.0,>=2.1, but you have python-dateutil 2.9.0.post0 which is incompatible.
+Successfully installed altair-5.5.0 blinker-1.9.0 cachetools-6.2.6 certifi-2026.1.4 charset-normalizer-3.4.4 click-8.1.8 gitdb-4.0.12 gitpython-3.1.46 narwhals-2.16.0 numpy-2.0.2 packaging-25.0 pandas-2.3.3 pillow-11.3.0 protobuf-6.33.5 pyarrow-21.0.0 pydeck-0.9.1 python-dateutil-2.9.0.post0 requests-2.32.5 smmap-5.0.2 streamlit-1.50.0 tenacity-9.1.2 toml-0.10.2 tornado-6.5.4 typing-extensions-4.15.0 tzdata-2025.3 watchdog-6.0.0
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ 
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ 
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ cd /home/ec2-user/workspace/my-workspace/dev/ai-exam-generation-workshop
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ sam build
+
+        SAM CLI now collects telemetry to better understand customer needs.
+
+        You can OPT OUT and disable telemetry collection by setting the
+        environment variable SAM_CLI_TELEMETRY=0 in your shell.
+        Thanks for your help!
+
+        Learn More: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-telemetry.html
+
+Building codeuri: /home/ec2-user/workspace/my-workspace/dev/ai-exam-generation-workshop/ExamGenFn runtime: python3.11 architecture: x86_64    
+functions: ExamGenFn                                                                                                                          
+requirements.txt file not found. Continuing the build without dependencies.                                                                   
+ Running PythonPipBuilder:CopySource                                                                                                          
+Building codeuri: /home/ec2-user/workspace/my-workspace/dev/ai-exam-generation-workshop/TakeExamFn runtime: python3.11 architecture: x86_64   
+functions: TakeExamFn                                                                                                                         
+requirements.txt file not found. Continuing the build without dependencies.                                                                   
+ Running PythonPipBuilder:CopySource                                                                                                          
+
+Build Succeeded
+
+Built Artifacts  : .aws-sam/build
+Built Template   : .aws-sam/build/template.yaml
+
+Commands you can use next
+=========================
+[*] Validate SAM template: sam validate
+[*] Invoke Function: sam local invoke
+[*] Test Function in the Cloud: sam sync --stack-name {{stack-name}} --watch
+[*] Deploy: sam deploy --guided
+
+SAM CLI update available (1.153.1); (1.141.0 installed)
+To download: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls -lrt
+total 24
+-rw-r--r--. 1 ec2-user ec2-user  309 Feb  8 15:33 CODE_OF_CONDUCT.md
+-rw-r--r--. 1 ec2-user ec2-user 5102 Feb  8 15:33 template.yml
+-rw-r--r--. 1 ec2-user ec2-user  945 Feb  8 15:33 LICENSE
+-rw-r--r--. 1 ec2-user ec2-user 3160 Feb  8 15:33 CONTRIBUTING.md
+-rw-r--r--. 1 ec2-user ec2-user  342 Feb  8 15:33 samconfig.toml
+drwxr-xr-x. 2 ec2-user ec2-user   26 Feb  8 15:55 TakeExamFn
+drwxr-xr-x. 2 ec2-user ec2-user   32 Feb  8 15:55 ExamGenFn
+drwxr-xr-x. 4 ec2-user ec2-user   67 Feb  8 15:55 frontend
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls -lrta
+total 52
+-rw-r--r--. 1 ec2-user ec2-user   309 Feb  8 15:33 CODE_OF_CONDUCT.md
+-rw-r--r--. 1 ec2-user ec2-user  6148 Feb  8 15:33 .DS_Store
+-rw-r--r--. 1 ec2-user ec2-user  5102 Feb  8 15:33 template.yml
+-rw-r--r--. 1 ec2-user ec2-user   945 Feb  8 15:33 LICENSE
+-rw-r--r--. 1 ec2-user ec2-user  3160 Feb  8 15:33 CONTRIBUTING.md
+-rw-r--r--. 1 ec2-user ec2-user   342 Feb  8 15:33 samconfig.toml
+-rw-r--r--. 1 ec2-user ec2-user   124 Feb  8 15:33 .gitignore
+drwxr-xr-x. 3 ec2-user ec2-user    58 Feb  8 15:55 ..
+drwxr-xr-x. 7 ec2-user ec2-user   187 Feb  8 15:55 .git
+drwxr-xr-x. 2 ec2-user ec2-user    26 Feb  8 15:55 TakeExamFn
+drwxr-xr-x. 2 ec2-user ec2-user    32 Feb  8 15:55 ExamGenFn
+drwxr-xr-x. 4 ec2-user ec2-user    67 Feb  8 15:55 frontend
+drwxr-xr-x. 7 ec2-user ec2-user 16384 Feb 10 07:33 .
+drwxrwxr-x. 3 ec2-user ec2-user    37 Feb 10 07:33 .aws-sam
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ sam deploy \
+   --stack-name workshop \
+   --guided
+    --region us-west-2 \
+    --capabilities CAPABILITY_NAMED_IAM
+
+Configuring SAM deploy
+======================
+
+        Looking for config file [samconfig.toml] :  Found
+        Reading default arguments  :  Success
+
+        Setting default arguments for 'sam deploy'
+        =========================================
+        Stack Name [workshop]: workshop
+        AWS Region [us-west-2]: us-west-2
+        #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+        Confirm changes before deploy [Y/n]: Y
+        #SAM needs permission to be able to create roles to connect to the resources in your template
+        Allow SAM CLI IAM role creation [Y/n]: Y
+        #Preserves the state of previously provisioned resources when an operation fails
+        Disable rollback [y/N]: N 
+        Save arguments to configuration file [Y/n]: Y
+        SAM configuration file [samconfig.toml]: samconfig.toml
+        SAM configuration environment [default]: default
+
+        Looking for resources needed for deployment:
+        Creating the required resources...
+        Successfully created!
+
+        Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6
+        Auto resolution of buckets can be turned off by setting resolve_s3=False
+        To use a specific S3 bucket, set --s3-bucket=<bucket_name>
+        Above settings can be stored in samconfig.toml
+
+        Saved arguments to config file
+        Running 'sam deploy' for future deployments will use the parameters saved above.
+        The above parameters can be changed by modifying samconfig.toml
+        Learn more about samconfig.toml syntax at 
+        https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+
+        Uploading to workshop/d1bbbeca61f392534f7f79dc0f9a8476  2344 / 2344  (100.00%)
+        Uploading to workshop/b1292bd608dcc91561392db60a7bd2a9  1202 / 1202  (100.00%)
+
+        Deploying with following values
+        ===============================
+        Stack name                   : workshop
+        Region                       : us-west-2
+        Confirm changeset            : True
+        Disable rollback             : False
+        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6
+        Capabilities                 : ["CAPABILITY_NAMED_IAM"]
+        Parameter overrides          : {"GenExamImageUri": "exam-gen-workshop", "TakeExamImageUri": "exam-gen-workshop", "CPUArchitecture": "arm64"}
+        Signing Profiles             : {}
+
+Initiating deployment
+=====================
+
+        Uploading to workshop/4b3cb976ddcd5078f1c843fa2b945114.template  5593 / 5593  (100.00%)
+
+
+Waiting for changeset to be created..
+
+CloudFormation stack changeset
+-----------------------------------------------------------------------------------------------------------------------------------------
+Operation                          LogicalResourceId                  ResourceType                       Replacement                      
+-----------------------------------------------------------------------------------------------------------------------------------------
++ Add                              ExamGenFnS3ObjectCreatedPermissi   AWS::Lambda::Permission            N/A                              
+                                   on                                                                                                     
++ Add                              ExamGenFn                          AWS::Lambda::Function              N/A                              
++ Add                              ExamGenLambdaExecutionRole         AWS::IAM::Role                     N/A                              
++ Add                              MyUniqueS3Bucket                   AWS::S3::Bucket                    N/A                              
++ Add                              S3AccessPolicy                     AWS::IAM::Policy                   N/A                              
++ Add                              TakeExamFn                         AWS::Lambda::Function              N/A                              
++ Add                              TakeExamLambdaExecutionRole        AWS::IAM::Role                     N/A                              
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+Changeset created successfully. arn:aws:cloudformation:us-west-2:756045348987:changeSet/samcli-deploy1770709002/17f47495-9a44-4d08-bbc5-fec17e9ce31c
+
+
+Previewing CloudFormation changeset before deployment
+======================================================
+Deploy this changeset? [y/N]: Y
+
+2026-02-10 07:40:27 - Waiting for stack create/update to complete
+
+CloudFormation events from stack operations (refresh every 5.0 seconds)
+-----------------------------------------------------------------------------------------------------------------------------------------
+ResourceStatus                     ResourceType                       LogicalResourceId                  ResourceStatusReason             
+-----------------------------------------------------------------------------------------------------------------------------------------
+CREATE_IN_PROGRESS                 AWS::CloudFormation::Stack         workshop                           User Initiated                   
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     ExamGenLambdaExecutionRole         -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     ExamGenLambdaExecutionRole         Resource creation Initiated      
+CREATE_COMPLETE                    AWS::IAM::Role                     ExamGenLambdaExecutionRole         -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              ExamGenFn                          -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              ExamGenFn                          Resource creation Initiated      
+CREATE_COMPLETE                    AWS::Lambda::Function              ExamGenFn                          -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Permission            ExamGenFnS3ObjectCreatedPermissi   -                                
+                                                                      on                                                                  
+CREATE_IN_PROGRESS                 AWS::Lambda::Permission            ExamGenFnS3ObjectCreatedPermissi   Resource creation Initiated      
+                                                                      on                                                                  
+CREATE_COMPLETE                    AWS::Lambda::Permission            ExamGenFnS3ObjectCreatedPermissi   -                                
+                                                                      on                                                                  
+CREATE_IN_PROGRESS                 AWS::S3::Bucket                    MyUniqueS3Bucket                   -                                
+CREATE_IN_PROGRESS                 AWS::S3::Bucket                    MyUniqueS3Bucket                   Resource creation Initiated      
+CREATE_COMPLETE                    AWS::S3::Bucket                    MyUniqueS3Bucket                   -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     TakeExamLambdaExecutionRole        -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Policy                   S3AccessPolicy                     -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     TakeExamLambdaExecutionRole        Resource creation Initiated      
+CREATE_IN_PROGRESS                 AWS::IAM::Policy                   S3AccessPolicy                     Resource creation Initiated      
+CREATE_COMPLETE                    AWS::IAM::Policy                   S3AccessPolicy                     -                                
+CREATE_COMPLETE                    AWS::IAM::Role                     TakeExamLambdaExecutionRole        -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              TakeExamFn                         -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              TakeExamFn                         Resource creation Initiated      
+CREATE_COMPLETE                    AWS::Lambda::Function              TakeExamFn                         -                                
+CREATE_COMPLETE                    AWS::CloudFormation::Stack         workshop                           -                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+CloudFormation outputs from deployed stack
+-------------------------------------------------------------------------------------------------------------------------------------------
+Outputs                                                                                                                                   
+-------------------------------------------------------------------------------------------------------------------------------------------
+Key                 S3Bucket                                                                                                              
+Description         S3 bucket name                                                                                                        
+Value               exam-gen-demo-756045348987-workshop                                                                                   
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Successfully created/updated stack - workshop in us-west-2
+
+bash: --region: command not found
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$
+
+export BUCKET_NAME= exam-gen-demo-756045348987-workshop
+cd frontend/
+streamlit run generate-exam-fe/exam-gen.py --server.port 8501 & streamlit run take-exam-fe/quiz.py --server.port 8502
+
+
+New
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls
+CODE_OF_CONDUCT.md  CONTRIBUTING.md  ExamGenFn  LICENSE  TakeExamFn  frontend  samconfig.toml  template.yml
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls -lrt
+total 24
+-rw-r--r--. 1 ec2-user ec2-user  309 Feb  8 15:33 CODE_OF_CONDUCT.md
+-rw-r--r--. 1 ec2-user ec2-user 5102 Feb  8 15:33 template.yml
+-rw-r--r--. 1 ec2-user ec2-user  945 Feb  8 15:33 LICENSE
+-rw-r--r--. 1 ec2-user ec2-user 3160 Feb  8 15:33 CONTRIBUTING.md
+-rw-r--r--. 1 ec2-user ec2-user  342 Feb  8 15:33 samconfig.toml
+drwxr-xr-x. 2 ec2-user ec2-user   26 Feb  8 15:55 TakeExamFn
+drwxr-xr-x. 2 ec2-user ec2-user   32 Feb  8 15:55 ExamGenFn
+drwxr-xr-x. 4 ec2-user ec2-user   67 Feb  8 15:55 frontend
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ pip3 install streamlit
+Defaulting to user installation because normal site-packages is not writeable
+Collecting streamlit
+  Downloading streamlit-1.50.0-py3-none-any.whl (10.1 MB)
+     |████████████████████████████████| 10.1 MB 7.0 MB/s            
+Collecting gitpython!=3.1.19,<4,>=3.0.7
+  Downloading gitpython-3.1.46-py3-none-any.whl (208 kB)
+     |████████████████████████████████| 208 kB 66.4 MB/s            
+Collecting pydeck<1,>=0.8.0b4
+  Downloading pydeck-0.9.1-py2.py3-none-any.whl (6.9 MB)
+     |████████████████████████████████| 6.9 MB 39.4 MB/s            
+Collecting toml<2,>=0.10.1
+  Downloading toml-0.10.2-py2.py3-none-any.whl (16 kB)
+Collecting blinker<2,>=1.5.0
+  Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Collecting altair!=5.4.0,!=5.4.1,<6,>=4.0
+  Downloading altair-5.5.0-py3-none-any.whl (731 kB)
+     |████████████████████████████████| 731 kB 90.8 MB/s            
+Collecting pyarrow>=7.0
+  Downloading pyarrow-21.0.0-cp39-cp39-manylinux_2_28_aarch64.whl (41.1 MB)
+     |████████████████████████████████| 41.1 MB 99.4 MB/s            
+Collecting click<9,>=7.0
+  Downloading click-8.1.8-py3-none-any.whl (98 kB)
+     |████████████████████████████████| 98 kB 21.0 MB/s            
+Collecting pillow<12,>=7.1.0
+  Downloading pillow-11.3.0-cp39-cp39-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (6.0 MB)
+     |████████████████████████████████| 6.0 MB 68.9 MB/s            
+Collecting typing-extensions<5,>=4.4.0
+  Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+     |████████████████████████████████| 44 kB 8.0 MB/s             
+Collecting requests<3,>=2.27
+  Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+     |████████████████████████████████| 64 kB 7.5 MB/s             
+Collecting packaging<26,>=20
+  Downloading packaging-25.0-py3-none-any.whl (66 kB)
+     |████████████████████████████████| 66 kB 11.6 MB/s            
+Collecting pandas<3,>=1.4.0
+  Downloading pandas-2.3.3-cp39-cp39-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (12.2 MB)
+     |████████████████████████████████| 12.2 MB 95.6 MB/s            
+Collecting cachetools<7,>=4.0
+  Downloading cachetools-6.2.6-py3-none-any.whl (11 kB)
+Collecting watchdog<7,>=2.1.5
+  Downloading watchdog-6.0.0-py3-none-manylinux2014_aarch64.whl (79 kB)
+     |████████████████████████████████| 79 kB 13.5 MB/s            
+Collecting numpy<3,>=1.23
+  Downloading numpy-2.0.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (13.9 MB)
+     |████████████████████████████████| 13.9 MB 93.2 MB/s            
+Collecting protobuf<7,>=3.20
+  Downloading protobuf-6.33.5-cp39-abi3-manylinux2014_aarch64.whl (324 kB)
+     |████████████████████████████████| 324 kB 71.4 MB/s            
+Collecting tornado!=6.5.0,<7,>=6.0.3
+  Downloading tornado-6.5.4-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (445 kB)
+     |████████████████████████████████| 445 kB 61.0 MB/s            
+Collecting tenacity<10,>=8.1.0
+  Downloading tenacity-9.1.2-py3-none-any.whl (28 kB)
+Requirement already satisfied: jinja2 in /usr/lib/python3.9/site-packages (from altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (2.11.3)
+Collecting narwhals>=1.14.2
+  Downloading narwhals-2.16.0-py3-none-any.whl (443 kB)
+     |████████████████████████████████| 443 kB 66.4 MB/s            
+Requirement already satisfied: jsonschema>=3.0 in /usr/lib/python3.9/site-packages (from altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (3.2.0)
+Collecting gitdb<5,>=4.0.1
+  Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+     |████████████████████████████████| 62 kB 3.7 MB/s             
+Collecting tzdata>=2022.7
+  Downloading tzdata-2025.3-py2.py3-none-any.whl (348 kB)
+     |████████████████████████████████| 348 kB 72.7 MB/s            
+Requirement already satisfied: pytz>=2020.1 in /usr/lib/python3.9/site-packages (from pandas<3,>=1.4.0->streamlit) (2022.7.1)
+Collecting python-dateutil>=2.8.2
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+     |████████████████████████████████| 229 kB 85.5 MB/s            
+Requirement already satisfied: idna<4,>=2.5 in /usr/lib/python3.9/site-packages (from requests<3,>=2.27->streamlit) (2.10)
+Collecting certifi>=2017.4.17
+  Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+     |████████████████████████████████| 152 kB 96.0 MB/s            
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.4.4-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (149 kB)
+     |████████████████████████████████| 149 kB 97.1 MB/s            
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/lib/python3.9/site-packages (from requests<3,>=2.27->streamlit) (1.25.10)
+Collecting smmap<6,>=3.0.1
+  Downloading smmap-5.0.2-py3-none-any.whl (24 kB)
+Requirement already satisfied: MarkupSafe>=0.23 in /usr/lib64/python3.9/site-packages (from jinja2->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (1.1.1)
+Requirement already satisfied: attrs>=17.4.0 in /usr/lib/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (20.3.0)
+Requirement already satisfied: pyrsistent>=0.14.0 in /usr/lib64/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (0.17.3)
+Requirement already satisfied: setuptools in /usr/lib/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (59.6.0)
+Requirement already satisfied: six>=1.11.0 in /usr/lib/python3.9/site-packages (from jsonschema>=3.0->altair!=5.4.0,!=5.4.1,<6,>=4.0->streamlit) (1.15.0)
+Installing collected packages: smmap, tzdata, typing-extensions, python-dateutil, packaging, numpy, narwhals, gitdb, charset-normalizer, certifi, watchdog, tornado, toml, tenacity, requests, pydeck, pyarrow, protobuf, pillow, pandas, gitpython, click, cachetools, blinker, altair, streamlit
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+awscli 2.32.22 requires python-dateutil<=2.9.0,>=2.1, but you have python-dateutil 2.9.0.post0 which is incompatible.
+Successfully installed altair-5.5.0 blinker-1.9.0 cachetools-6.2.6 certifi-2026.1.4 charset-normalizer-3.4.4 click-8.1.8 gitdb-4.0.12 gitpython-3.1.46 narwhals-2.16.0 numpy-2.0.2 packaging-25.0 pandas-2.3.3 pillow-11.3.0 protobuf-6.33.5 pyarrow-21.0.0 pydeck-0.9.1 python-dateutil-2.9.0.post0 requests-2.32.5 smmap-5.0.2 streamlit-1.50.0 tenacity-9.1.2 toml-0.10.2 tornado-6.5.4 typing-extensions-4.15.0 tzdata-2025.3 watchdog-6.0.0
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ 
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ 
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ cd /home/ec2-user/workspace/my-workspace/dev/ai-exam-generation-workshop
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ sam build
+
+        SAM CLI now collects telemetry to better understand customer needs.
+
+        You can OPT OUT and disable telemetry collection by setting the
+        environment variable SAM_CLI_TELEMETRY=0 in your shell.
+        Thanks for your help!
+
+        Learn More: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-telemetry.html
+
+Building codeuri: /home/ec2-user/workspace/my-workspace/dev/ai-exam-generation-workshop/ExamGenFn runtime: python3.11 architecture: x86_64    
+functions: ExamGenFn                                                                                                                          
+requirements.txt file not found. Continuing the build without dependencies.                                                                   
+ Running PythonPipBuilder:CopySource                                                                                                          
+Building codeuri: /home/ec2-user/workspace/my-workspace/dev/ai-exam-generation-workshop/TakeExamFn runtime: python3.11 architecture: x86_64   
+functions: TakeExamFn                                                                                                                         
+requirements.txt file not found. Continuing the build without dependencies.                                                                   
+ Running PythonPipBuilder:CopySource                                                                                                          
+
+Build Succeeded
+
+Built Artifacts  : .aws-sam/build
+Built Template   : .aws-sam/build/template.yaml
+
+Commands you can use next
+=========================
+[*] Validate SAM template: sam validate
+[*] Invoke Function: sam local invoke
+[*] Test Function in the Cloud: sam sync --stack-name {{stack-name}} --watch
+[*] Deploy: sam deploy --guided
+
+SAM CLI update available (1.153.1); (1.141.0 installed)
+To download: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls -lrt
+total 24
+-rw-r--r--. 1 ec2-user ec2-user  309 Feb  8 15:33 CODE_OF_CONDUCT.md
+-rw-r--r--. 1 ec2-user ec2-user 5102 Feb  8 15:33 template.yml
+-rw-r--r--. 1 ec2-user ec2-user  945 Feb  8 15:33 LICENSE
+-rw-r--r--. 1 ec2-user ec2-user 3160 Feb  8 15:33 CONTRIBUTING.md
+-rw-r--r--. 1 ec2-user ec2-user  342 Feb  8 15:33 samconfig.toml
+drwxr-xr-x. 2 ec2-user ec2-user   26 Feb  8 15:55 TakeExamFn
+drwxr-xr-x. 2 ec2-user ec2-user   32 Feb  8 15:55 ExamGenFn
+drwxr-xr-x. 4 ec2-user ec2-user   67 Feb  8 15:55 frontend
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ ls -lrta
+total 52
+-rw-r--r--. 1 ec2-user ec2-user   309 Feb  8 15:33 CODE_OF_CONDUCT.md
+-rw-r--r--. 1 ec2-user ec2-user  6148 Feb  8 15:33 .DS_Store
+-rw-r--r--. 1 ec2-user ec2-user  5102 Feb  8 15:33 template.yml
+-rw-r--r--. 1 ec2-user ec2-user   945 Feb  8 15:33 LICENSE
+-rw-r--r--. 1 ec2-user ec2-user  3160 Feb  8 15:33 CONTRIBUTING.md
+-rw-r--r--. 1 ec2-user ec2-user   342 Feb  8 15:33 samconfig.toml
+-rw-r--r--. 1 ec2-user ec2-user   124 Feb  8 15:33 .gitignore
+drwxr-xr-x. 3 ec2-user ec2-user    58 Feb  8 15:55 ..
+drwxr-xr-x. 7 ec2-user ec2-user   187 Feb  8 15:55 .git
+drwxr-xr-x. 2 ec2-user ec2-user    26 Feb  8 15:55 TakeExamFn
+drwxr-xr-x. 2 ec2-user ec2-user    32 Feb  8 15:55 ExamGenFn
+drwxr-xr-x. 4 ec2-user ec2-user    67 Feb  8 15:55 frontend
+drwxr-xr-x. 7 ec2-user ec2-user 16384 Feb 10 07:33 .
+drwxrwxr-x. 3 ec2-user ec2-user    37 Feb 10 07:33 .aws-sam
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ sam deploy \
+   --stack-name workshop \
+   --guided
+    --region us-west-2 \
+    --capabilities CAPABILITY_NAMED_IAM
+
+Configuring SAM deploy
+======================
+
+        Looking for config file [samconfig.toml] :  Found
+        Reading default arguments  :  Success
+
+        Setting default arguments for 'sam deploy'
+        =========================================
+        Stack Name [workshop]: workshop
+        AWS Region [us-west-2]: us-west-2
+        #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+        Confirm changes before deploy [Y/n]: Y
+        #SAM needs permission to be able to create roles to connect to the resources in your template
+        Allow SAM CLI IAM role creation [Y/n]: Y
+        #Preserves the state of previously provisioned resources when an operation fails
+        Disable rollback [y/N]: N 
+        Save arguments to configuration file [Y/n]: Y
+        SAM configuration file [samconfig.toml]: samconfig.toml
+        SAM configuration environment [default]: default
+
+        Looking for resources needed for deployment:
+        Creating the required resources...
+        Successfully created!
+
+        Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6
+        Auto resolution of buckets can be turned off by setting resolve_s3=False
+        To use a specific S3 bucket, set --s3-bucket=<bucket_name>
+        Above settings can be stored in samconfig.toml
+
+        Saved arguments to config file
+        Running 'sam deploy' for future deployments will use the parameters saved above.
+        The above parameters can be changed by modifying samconfig.toml
+        Learn more about samconfig.toml syntax at 
+        https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+
+        Uploading to workshop/d1bbbeca61f392534f7f79dc0f9a8476  2344 / 2344  (100.00%)
+        Uploading to workshop/b1292bd608dcc91561392db60a7bd2a9  1202 / 1202  (100.00%)
+
+        Deploying with following values
+        ===============================
+        Stack name                   : workshop
+        Region                       : us-west-2
+        Confirm changeset            : True
+        Disable rollback             : False
+        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6
+        Capabilities                 : ["CAPABILITY_NAMED_IAM"]
+        Parameter overrides          : {"GenExamImageUri": "exam-gen-workshop", "TakeExamImageUri": "exam-gen-workshop", "CPUArchitecture": "arm64"}
+        Signing Profiles             : {}
+
+Initiating deployment
+=====================
+
+        Uploading to workshop/4b3cb976ddcd5078f1c843fa2b945114.template  5593 / 5593  (100.00%)
+
+
+Waiting for changeset to be created..
+
+CloudFormation stack changeset
+-----------------------------------------------------------------------------------------------------------------------------------------
+Operation                          LogicalResourceId                  ResourceType                       Replacement                      
+-----------------------------------------------------------------------------------------------------------------------------------------
++ Add                              ExamGenFnS3ObjectCreatedPermissi   AWS::Lambda::Permission            N/A                              
+                                   on                                                                                                     
++ Add                              ExamGenFn                          AWS::Lambda::Function              N/A                              
++ Add                              ExamGenLambdaExecutionRole         AWS::IAM::Role                     N/A                              
++ Add                              MyUniqueS3Bucket                   AWS::S3::Bucket                    N/A                              
++ Add                              S3AccessPolicy                     AWS::IAM::Policy                   N/A                              
++ Add                              TakeExamFn                         AWS::Lambda::Function              N/A                              
++ Add                              TakeExamLambdaExecutionRole        AWS::IAM::Role                     N/A                              
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+Changeset created successfully. arn:aws:cloudformation:us-west-2:756045348987:changeSet/samcli-deploy1770709002/17f47495-9a44-4d08-bbc5-fec17e9ce31c
+
+
+Previewing CloudFormation changeset before deployment
+======================================================
+Deploy this changeset? [y/N]: Y
+
+2026-02-10 07:40:27 - Waiting for stack create/update to complete
+
+CloudFormation events from stack operations (refresh every 5.0 seconds)
+-----------------------------------------------------------------------------------------------------------------------------------------
+ResourceStatus                     ResourceType                       LogicalResourceId                  ResourceStatusReason             
+-----------------------------------------------------------------------------------------------------------------------------------------
+CREATE_IN_PROGRESS                 AWS::CloudFormation::Stack         workshop                           User Initiated                   
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     ExamGenLambdaExecutionRole         -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     ExamGenLambdaExecutionRole         Resource creation Initiated      
+CREATE_COMPLETE                    AWS::IAM::Role                     ExamGenLambdaExecutionRole         -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              ExamGenFn                          -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              ExamGenFn                          Resource creation Initiated      
+CREATE_COMPLETE                    AWS::Lambda::Function              ExamGenFn                          -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Permission            ExamGenFnS3ObjectCreatedPermissi   -                                
+                                                                      on                                                                  
+CREATE_IN_PROGRESS                 AWS::Lambda::Permission            ExamGenFnS3ObjectCreatedPermissi   Resource creation Initiated      
+                                                                      on                                                                  
+CREATE_COMPLETE                    AWS::Lambda::Permission            ExamGenFnS3ObjectCreatedPermissi   -                                
+                                                                      on                                                                  
+CREATE_IN_PROGRESS                 AWS::S3::Bucket                    MyUniqueS3Bucket                   -                                
+CREATE_IN_PROGRESS                 AWS::S3::Bucket                    MyUniqueS3Bucket                   Resource creation Initiated      
+CREATE_COMPLETE                    AWS::S3::Bucket                    MyUniqueS3Bucket                   -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     TakeExamLambdaExecutionRole        -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Policy                   S3AccessPolicy                     -                                
+CREATE_IN_PROGRESS                 AWS::IAM::Role                     TakeExamLambdaExecutionRole        Resource creation Initiated      
+CREATE_IN_PROGRESS                 AWS::IAM::Policy                   S3AccessPolicy                     Resource creation Initiated      
+CREATE_COMPLETE                    AWS::IAM::Policy                   S3AccessPolicy                     -                                
+CREATE_COMPLETE                    AWS::IAM::Role                     TakeExamLambdaExecutionRole        -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              TakeExamFn                         -                                
+CREATE_IN_PROGRESS                 AWS::Lambda::Function              TakeExamFn                         Resource creation Initiated      
+CREATE_COMPLETE                    AWS::Lambda::Function              TakeExamFn                         -                                
+CREATE_COMPLETE                    AWS::CloudFormation::Stack         workshop                           -                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+CloudFormation outputs from deployed stack
+-------------------------------------------------------------------------------------------------------------------------------------------
+Outputs                                                                                                                                   
+-------------------------------------------------------------------------------------------------------------------------------------------
+Key                 S3Bucket                                                                                                              
+Description         S3 bucket name                                                                                                        
+Value               exam-gen-demo-756045348987-workshop                                                                                   
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Successfully created/updated stack - workshop in us-west-2
+
+bash: --region: command not found
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ export BUCKET_NAME= exam-gen-demo-756045348987-workshop
+bash: export: `exam-gen-demo-756045348987-workshop': not a valid identifier
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ export BUCKET_NAME=exam-gen-demo-756045348987-workshop
+[ec2-user@ip-10-180-3-100 ai-exam-generation-workshop]$ cd frontend/
+[ec2-user@ip-10-180-3-100 frontend]$ ls -lrt
+total 0
+drwxr-xr-x. 2 ec2-user ec2-user 25 Feb  8 15:55 generate-exam-fe
+drwxr-xr-x. 2 ec2-user ec2-user 21 Feb  8 15:55 take-exam-fe
+[ec2-user@ip-10-180-3-100 frontend]$ streamlit run generate-exam-fe/exam-gen.py --server.port 8501 & streamlit run take-exam-fe/quiz.py --server.port 8502
+[1] 98963
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://10.180.3.100:8501
+  External URL: http://54.148.96.80:8501
+
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8502
+  Network URL: http://10.180.3.100:8502
+  External URL: http://54.148.96.80:8502
+
+/usr/local/lib/python3.9/site-packages/boto3/compat.py:89: PythonDeprecationWarning: Boto3 will no longer support Python 3.9 starting April 29, 2026. To continue receiving service updates, bug fixes, and security updates please upgrade to Python 3.10 or later. More information can be found here: https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/
+  warnings.warn(warning, PythonDeprecationWarning)
+2026-02-10 07:44:10,539 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:44:10,787 - INFO - Starting exam generation application
+2026-02-10 07:44:10,787 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 07:44:10,811 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:54:41,629 - INFO - Starting exam generation application
+2026-02-10 07:54:41,629 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 07:54:41,653 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:54:41,798 - INFO - Starting exam generation application
+2026-02-10 07:54:41,799 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 07:54:41,822 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:54:42,723 - INFO - Starting exam generation application
+2026-02-10 07:54:42,724 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 07:54:42,748 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:54:44,375 - INFO - Starting exam generation application
+2026-02-10 07:54:44,376 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 07:54:44,399 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:55:07,606 - INFO - Starting exam generation application
+2026-02-10 07:55:07,606 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 07:55:07,612 - INFO - File uploaded: whyBugsGood.pdf, size: 4087643 bytes
+2026-02-10 07:55:07,614 - INFO - Starting S3 upload for file: whyBugsGood.pdf
+2026-02-10 07:55:07,785 - INFO - Successfully uploaded whyBugsGood.pdf to S3 bucket exam-gen-demo-756045348987-workshop
+2026-02-10 07:55:07,804 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+/usr/local/lib/python3.9/site-packages/boto3/compat.py:89: PythonDeprecationWarning: Boto3 will no longer support Python 3.9 starting April 29, 2026. To continue receiving service updates, bug fixes, and security updates please upgrade to Python 3.10 or later. More information can be found here: https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/
+  warnings.warn(warning, PythonDeprecationWarning)
+2026-02-10 07:58:40,190 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver
+2026-02-10 07:58:44,925 - INFO - Successfully loaded 4 questions from questions_bank/whyBugsGood.json
+2026-02-10 07:59:19,564 - INFO - Successfully loaded 4 questions from questions_bank/whyBugsGood.json
+^C  Stopping...
+[ec2-user@ip-10-180-3-100 frontend]$ 2026-02-10 11:28:18,838 - INFO - Starting exam generation application
+2026-02-10 11:28:18,839 - INFO - Using S3 bucket: exam-gen-demo-756045348987-workshop
+2026-02-10 11:28:18,862 - INFO - Found credentials from IAM Role: devbox-iamrole-codeserver

@@ -1,0 +1,153 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: |
+  This Template automates the creation of a an Exam Generation application using Amazon Bedrock
+  DISCLAIMER: This template includes sections that are initially commented out for testing purposes using HTTP. 
+  Users have the option to uncomment these sections to enable HTTP testing. Conversely, to ensure secure communication,
+  it is recommended to use HTTPS by default. If you choose to enable HTTP for testing, please remember to comment out 
+  the HTTPS related parts and variables if HTTPS is not needed. This adjustment allows for flexibility in testing environments, but always ensure 
+  secure configurations (HTTPS) are used in production environments for enhanced security.
+
+Resources:
+
+  MyUniqueS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'exam-gen-demo-${AWS::AccountId}-${AWS::StackName}'
+
+  ExamGenLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'ExamGenLambdaExecutionRole-${AWS::StackName}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {Service: 'lambda.amazonaws.com'}
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'GenExamLambdaPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: Allow
+                Action: 
+                  - 'bedrock:InvokeModel'
+                Resource: '*'
+ 
+  TakeExamLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    DependsOn: [MyUniqueS3Bucket]
+    Properties:
+      RoleName: !Sub 'TakeExamLambdaExecutionRole-${AWS::StackName}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {Service: 'lambda.amazonaws.com'}
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'TakeExamLambdaPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: Allow
+                Action: 
+                  - 's3:ListBucket'
+                Resource:
+                  - !Sub 'arn:aws:s3:::${MyUniqueS3Bucket}'
+                Condition:
+                  StringLike:
+                    s3:prefix:
+                      - "questions_bank/*"
+              - Effect: Allow
+                Action: 
+                  - 's3:GetObject'
+                Resource:
+                  - !Sub 'arn:aws:s3:::${MyUniqueS3Bucket}/questions_bank/*'
+        
+  S3AccessPolicy:
+    Type: AWS::IAM::Policy
+    DependsOn: [ExamGenLambdaExecutionRole, MyUniqueS3Bucket]
+    Properties:
+      PolicyName: S3AccessPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: 
+             - s3:ListBucket
+            Resource: !Sub 'arn:aws:s3:::${MyUniqueS3Bucket}'
+            Condition:
+              StringLike:
+                s3:prefix:
+                  - "exams/*"
+                  - "questions_bank/*"
+          - Effect: Allow
+            Action: s3:GetObject
+            Resource: !Sub 'arn:aws:s3:::${MyUniqueS3Bucket}/exams/*'
+          - Effect: Allow
+            Action: s3:PutObject
+            Resource: !Sub 'arn:aws:s3:::${MyUniqueS3Bucket}/questions_bank/*'
+      Roles:
+        - !Ref ExamGenLambdaExecutionRole
+
+
+  ExamGenFn:
+    Type: AWS::Serverless::Function
+    DependsOn: [ExamGenLambdaExecutionRole]
+    Properties:
+      FunctionName: !Sub 'ExamGenFn-${AWS::StackName}'
+      Runtime: python3.11
+      Handler: lambda_function.lambda_handler
+      CodeUri: ExamGenFn/
+      MemorySize: 10240
+      Timeout: 300
+      Role: !GetAtt ExamGenLambdaExecutionRole.Arn
+      Events:
+        S3ObjectCreated:
+          Type: S3
+          Properties:
+            Bucket: !Ref MyUniqueS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: exams/
+                  - Name: suffix
+                    Value: .pdf
+
+
+  TakeExamFn:
+    Type: AWS::Serverless::Function
+    DependsOn: [TakeExamLambdaExecutionRole]
+    Properties:
+      FunctionName: !Sub 'TakeExamFn-${AWS::StackName}'
+      Runtime: python3.11
+      Handler: take_exam.lambda_handler
+      CodeUri: TakeExamFn/
+      MemorySize: 10240
+      Timeout: 300
+      Role: !GetAtt TakeExamLambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref MyUniqueS3Bucket
+
+
+Outputs:
+  S3Bucket:
+    Value: !Ref MyUniqueS3Bucket
+    Description: S3 bucket name

@@ -1,0 +1,34 @@
+[
+    {
+        "question": "What insect landed on Betty that her grandfather said was a 'good bug'?",
+        "options": [
+            "Ladybug",
+            "Praying Mantis"
+        ],
+        "correct_answer": "Praying Mantis"
+    },
+    {
+        "question": "What do ladybugs eat according to the story?",
+        "options": [
+            "Flies and beetles",
+            "Aphids and mites"
+        ],
+        "correct_answer": "Aphids and mites"
+    },
+    {
+        "question": "Which bug in the story is described as having a strong smell if squished?",
+        "options": [
+            "Ladybug",
+            "Stink bug"
+        ],
+        "correct_answer": "Stink bug"
+    },
+    {
+        "question": "Betty's grandfather uses chemicals to get rid of bad bugs in his garden.",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correct_answer": "False"
+    }
+]

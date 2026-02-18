@@ -1,0 +1,503 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "This Template automates the creation of a an Exam Generation application\
+  \ using Amazon Bedrock\nDISCLAIMER: This template includes sections that are initially\
+  \ commented out for testing purposes using HTTP. \nUsers have the option to uncomment\
+  \ these sections to enable HTTP testing. Conversely, to ensure secure communication,\n\
+  it is recommended to use HTTPS by default. If you choose to enable HTTP for testing,\
+  \ please remember to comment out \nthe HTTPS related parts and variables if HTTPS\
+  \ is not needed. This adjustment allows for flexibility in testing environments,\
+  \ but always ensure \nsecure configurations (HTTPS) are used in production environments\
+  \ for enhanced security.\n"
+Resources:
+  MyUniqueS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Sub: exam-gen-demo-${AWS::AccountId}-${AWS::StackName}
+    Metadata:
+      SamResourceId: MyUniqueS3Bucket
+  ExamGenLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ExamGenLambdaExecutionRole-${AWS::StackName}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: GenExamLambdaPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - bedrock:InvokeModel
+            Resource: '*'
+    Metadata:
+      SamResourceId: ExamGenLambdaExecutionRole
+  TakeExamLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    DependsOn:
+    - MyUniqueS3Bucket
+    Properties:
+      RoleName:
+        Fn::Sub: TakeExamLambdaExecutionRole-${AWS::StackName}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: TakeExamLambdaPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - s3:ListBucket
+            Resource:
+            - Fn::Sub: arn:aws:s3:::${MyUniqueS3Bucket}
+            Condition:
+              StringLike:
+                s3:prefix:
+                - questions_bank/*
+          - Effect: Allow
+            Action:
+            - s3:GetObject
+            Resource:
+            - Fn::Sub: arn:aws:s3:::${MyUniqueS3Bucket}/questions_bank/*
+    Metadata:
+      SamResourceId: TakeExamLambdaExecutionRole
+  S3AccessPolicy:
+    Type: AWS::IAM::Policy
+    DependsOn:
+    - ExamGenLambdaExecutionRole
+    - MyUniqueS3Bucket
+    Properties:
+      PolicyName: S3AccessPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:ListBucket
+          Resource:
+            Fn::Sub: arn:aws:s3:::${MyUniqueS3Bucket}
+          Condition:
+            StringLike:
+              s3:prefix:
+              - exams/*
+              - questions_bank/*
+        - Effect: Allow
+          Action: s3:GetObject
+          Resource:
+            Fn::Sub: arn:aws:s3:::${MyUniqueS3Bucket}/exams/*
+        - Effect: Allow
+          Action: s3:PutObject
+          Resource:
+            Fn::Sub: arn:aws:s3:::${MyUniqueS3Bucket}/questions_bank/*
+      Roles:
+      - Ref: ExamGenLambdaExecutionRole
+    Metadata:
+      SamResourceId: S3AccessPolicy
+  ExamGenFn:
+    Type: AWS::Serverless::Function
+    DependsOn:
+    - ExamGenLambdaExecutionRole
+    Properties:
+      FunctionName:
+        Fn::Sub: ExamGenFn-${AWS::StackName}
+      Runtime: python3.11
+      Handler: lambda_function.lambda_handler
+      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6/workshop/ee949e1e428b1dcf80d5a5a6943db93b
+      MemorySize: 10240
+      Timeout: 300
+      Role:
+        Fn::GetAtt:
+        - ExamGenLambdaExecutionRole
+        - Arn
+      Events:
+        S3ObjectCreated:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: MyUniqueS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                - Name: prefix
+                  Value: exams/
+                - Name: suffix
+                  Value: .pdf
+    Metadata:
+      SamResourceId: ExamGenFn
+  TakeExamFn:
+    Type: AWS::Serverless::Function
+    DependsOn:
+    - TakeExamLambdaExecutionRole
+    Properties:
+      FunctionName:
+        Fn::Sub: TakeExamFn-${AWS::StackName}
+      Runtime: python3.11
+      Handler: take_exam.lambda_handler
+      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6/workshop/b1292bd608dcc91561392db60a7bd2a9
+      MemorySize: 10240
+      Timeout: 300
+      Role:
+        Fn::GetAtt:
+        - TakeExamLambdaExecutionRole
+        - Arn
+      Environment:
+        Variables:
+          BUCKET_NAME:
+            Ref: MyUniqueS3Bucket
+    Metadata:
+      SamResourceId: TakeExamFn
+Outputs:
+  S3Bucket:
+    Value:
+      Ref: MyUniqueS3Bucket
+    Description: S3 bucket name
+
+
+Processed:
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "This Template automates the creation of a an Exam Generation application using Amazon Bedrock\nDISCLAIMER: This template includes sections that are initially commented out for testing purposes using HTTP. \nUsers have the option to uncomment these sections to enable HTTP testing. Conversely, to ensure secure communication,\nit is recommended to use HTTPS by default. If you choose to enable HTTP for testing, please remember to comment out \nthe HTTPS related parts and variables if HTTPS is not needed. This adjustment allows for flexibility in testing environments, but always ensure \nsecure configurations (HTTPS) are used in production environments for enhanced security.\n",
+  "Outputs": {
+    "S3Bucket": {
+      "Value": {
+        "Ref": "MyUniqueS3Bucket"
+      },
+      "Description": "S3 bucket name"
+    }
+  },
+  "Resources": {
+    "MyUniqueS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "DependsOn": [
+        "ExamGenFnS3ObjectCreatedPermission"
+      ],
+      "Metadata": {
+        "SamResourceId": "MyUniqueS3Bucket"
+      },
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "exam-gen-demo-${AWS::AccountId}-${AWS::StackName}"
+        },
+        "NotificationConfiguration": {
+          "LambdaConfigurations": [
+            {
+              "Function": {
+                "Fn::GetAtt": [
+                  "ExamGenFn",
+                  "Arn"
+                ]
+              },
+              "Filter": {
+                "S3Key": {
+                  "Rules": [
+                    {
+                      "Name": "prefix",
+                      "Value": "exams/"
+                    },
+                    {
+                      "Name": "suffix",
+                      "Value": ".pdf"
+                    }
+                  ]
+                }
+              },
+              "Event": "s3:ObjectCreated:*"
+            }
+          ]
+        }
+      }
+    },
+    "ExamGenLambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": {
+          "Fn::Sub": "ExamGenLambdaExecutionRole-${AWS::StackName}"
+        },
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "GenExamLambdaPolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "bedrock:InvokeModel"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "SamResourceId": "ExamGenLambdaExecutionRole"
+      }
+    },
+    "TakeExamLambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "DependsOn": [
+        "MyUniqueS3Bucket"
+      ],
+      "Properties": {
+        "RoleName": {
+          "Fn::Sub": "TakeExamLambdaExecutionRole-${AWS::StackName}"
+        },
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "TakeExamLambdaPolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:ListBucket"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:s3:::${MyUniqueS3Bucket}"
+                    }
+                  ],
+                  "Condition": {
+                    "StringLike": {
+                      "s3:prefix": [
+                        "questions_bank/*"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:s3:::${MyUniqueS3Bucket}/questions_bank/*"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "SamResourceId": "TakeExamLambdaExecutionRole"
+      }
+    },
+    "S3AccessPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": [
+        "ExamGenLambdaExecutionRole",
+        "MyUniqueS3Bucket"
+      ],
+      "Properties": {
+        "PolicyName": "S3AccessPolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
+                "Fn::Sub": "arn:aws:s3:::${MyUniqueS3Bucket}"
+              },
+              "Condition": {
+                "StringLike": {
+                  "s3:prefix": [
+                    "exams/*",
+                    "questions_bank/*"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Sub": "arn:aws:s3:::${MyUniqueS3Bucket}/exams/*"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Sub": "arn:aws:s3:::${MyUniqueS3Bucket}/questions_bank/*"
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "ExamGenLambdaExecutionRole"
+          }
+        ]
+      },
+      "Metadata": {
+        "SamResourceId": "S3AccessPolicy"
+      }
+    },
+    "ExamGenFn": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": [
+        "ExamGenLambdaExecutionRole"
+      ],
+      "Metadata": {
+        "SamResourceId": "ExamGenFn"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6",
+          "S3Key": "workshop/ee949e1e428b1dcf80d5a5a6943db93b"
+        },
+        "FunctionName": {
+          "Fn::Sub": "ExamGenFn-${AWS::StackName}"
+        },
+        "Handler": "lambda_function.lambda_handler",
+        "MemorySize": 10240,
+        "Role": {
+          "Fn::GetAtt": [
+            "ExamGenLambdaExecutionRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11",
+        "Timeout": 300,
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "ExamGenFnS3ObjectCreatedPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "ExamGenFn"
+        },
+        "Principal": "s3.amazonaws.com",
+        "SourceAccount": {
+          "Ref": "AWS::AccountId"
+        }
+      }
+    },
+    "TakeExamFn": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": [
+        "TakeExamLambdaExecutionRole"
+      ],
+      "Metadata": {
+        "SamResourceId": "TakeExamFn"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-3rf18i5mg5g6",
+          "S3Key": "workshop/b1292bd608dcc91561392db60a7bd2a9"
+        },
+        "FunctionName": {
+          "Fn::Sub": "TakeExamFn-${AWS::StackName}"
+        },
+        "Handler": "take_exam.lambda_handler",
+        "MemorySize": 10240,
+        "Role": {
+          "Fn::GetAtt": [
+            "TakeExamLambdaExecutionRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11",
+        "Timeout": 300,
+        "Environment": {
+          "Variables": {
+            "BUCKET_NAME": {
+              "Ref": "MyUniqueS3Bucket"
+            }
+          }
+        },
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    }
+  }
+}

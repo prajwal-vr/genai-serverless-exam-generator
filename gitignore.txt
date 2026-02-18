@@ -1,0 +1,5 @@
+.aws-sam/*
+.aws-sam/build.toml
+.aws-sam/build/ExamGenFn/lambda_function.py
+.aws-sam/build/TakeExamFn/take_exam.py
+.DS_Store
